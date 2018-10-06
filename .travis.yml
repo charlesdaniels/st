@@ -11,8 +11,9 @@ matrix:
           packages:
             - g++-4.9
             - libx11-dev
-            - libx11-6
-            - xorg
+            - libxext-dev
+            - libxft-dev
+
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
@@ -25,8 +26,8 @@ matrix:
           packages:
             - g++-5
             - libx11-dev
-            - libx11-6
-            - xorg
+            - libxext-dev
+            - libxft-dev
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
@@ -39,8 +40,8 @@ matrix:
           packages:
             - g++-6
             - libx11-dev
-            - libx11-6
-            - xorg
+            - libxext-dev
+            - libxft-dev
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
@@ -54,7 +55,8 @@ matrix:
             - g++-7
             - libx11-dev
             - libx11-6
-            - xorg
+            - libxext-dev
+            - libxft-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
