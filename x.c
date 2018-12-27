@@ -1440,6 +1440,11 @@ xsettitle(char *p)
 void
 delete_image(ImageList *im)
 {
+	// TODO
+	im->should_delete=0;
+	return;
+	printf("should never see this\n");
+
 	if (im->prev)
 		im->prev->next = im->next;
 	else
@@ -1507,7 +1512,9 @@ xfinishdraw(void)
 			delete_image(im);
 			continue;
 		}
+
 		if (!im->pixmap) {
+			printf("create image pixmap!\n");
 			im->pixmap = (void *)XCreatePixmap(xw.dpy, xw.win, im->width, im->height, DefaultDepth(xw.dpy, xw.scr));
 			XImage ximage = {
 				.format = ZPixmap,
@@ -1527,6 +1534,7 @@ xfinishdraw(void)
 			free(im->pixels);
 			im->pixels = NULL;
 		}
+
 		n = 0;
 		memset(&gcvalues, 0, sizeof(gcvalues));
 		gc = XCreateGC(xw.dpy, xw.win, 0, &gcvalues);

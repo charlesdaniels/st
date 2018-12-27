@@ -1006,7 +1006,7 @@ treset(void)
 	}
 
 	for (im = term.images; im; im = im->next) {
-		im->should_delete = 1;
+		/* im->should_delete = 1; */
 	}
 }
 
@@ -1036,6 +1036,7 @@ void
 kscrolldown(const Arg* a)
 {
 	int n = a->i;
+	ImageList *im;
 
 	if (n < 0)
 		n = term.row + n;
@@ -1048,12 +1049,19 @@ kscrolldown(const Arg* a)
 		selscroll(0, -n);
 		tfulldirt();
 	}
+	for (im = term.images; im; im = im->next) {
+		if (im->y < term.bot)
+			im->y-=n;
+		/* if (im->y > term.bot) */
+		/*         im->should_delete = 1; */
+	}
 }
 
 void
 kscrollup(const Arg* a)
 {
 	int n = a->i;
+	ImageList *im;
 
 	if (n < 0)
 		n = term.row + n;
@@ -1062,6 +1070,13 @@ kscrollup(const Arg* a)
 		term.scr += n;
 		selscroll(0, n);
 		tfulldirt();
+	}
+	for (im = term.images; im; im = im->next) {
+		if (im->y+im->height/win.ch > term.top)
+			im->y += n;
+		//TODO
+		/* if (im->y+im->height/win.ch < term.top) */
+		/*         im->should_delete = 1; */
 	}
 }
 
@@ -1094,8 +1109,8 @@ tscrolldown(int orig, int n, int copyhist)
 	for (im = term.images; im; im = im->next) {
 		if (im->y < term.bot)
 			im->y+=n;
-		if (im->y > term.bot)
-			im->should_delete = 1;
+		/* if (im->y > term.bot) */
+		/*         im->should_delete = 1; */
 	}
 
 	selscroll(orig, n);
@@ -1129,8 +1144,9 @@ tscrollup(int orig, int n, int copyhist)
 	for (im = term.images; im; im = im->next) {
 		if (im->y+im->height/win.ch > term.top)
 			im->y -= n;
-		if (im->y+im->height/win.ch < term.top)
-			im->should_delete = 1;
+		//TODO
+		/* if (im->y+im->height/win.ch < term.top) */
+		/*         im->should_delete = 1; */
 	}
 
 	selscroll(orig, -n);
@@ -1139,6 +1155,8 @@ tscrollup(int orig, int n, int copyhist)
 void
 selscroll(int orig, int n)
 {
+	ImageList *im;
+
 	if (sel.ob.x == -1)
 		return;
 
@@ -1164,6 +1182,7 @@ selscroll(int orig, int n)
 		}
 		selnormalize();
 	}
+
 }
 
 void
@@ -1965,10 +1984,12 @@ strhandle(void)
 			new_image->pixels = malloc(new_image->width * new_image->height * 4);
 			if (sixel_parser_finalize(&sixel_st, new_image->pixels) != 0) {
 				perror("sixel_parser_finalize() failed");
-				sixel_parser_deinit(&sixel_st);
+				//TODO
+				/* sixel_parser_deinit(&sixel_st); */
 				return;
 			}
-			sixel_parser_deinit(&sixel_st);
+			//TODO
+			/* sixel_parser_deinit(&sixel_st); */
 			if (term.images) {
 				ImageList *im;
 				for (im = term.images; im->next;)
