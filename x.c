@@ -1517,9 +1517,10 @@ xfinishdraw(void)
 
 	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
 			win.h, 0, 0);
-	/* XSetForeground(xw.dpy, dc.gc, */
-	/*                 dc.col[IS_SET(MODE_REVERSE)? */
-	/*                         defaultfg : defaultbg].pixel); */
+
+	XSetForeground(xw.dpy, dc.gc,
+			dc.col[IS_SET(MODE_REVERSE)?
+				defaultfg : defaultbg].pixel);
 
 	drawregion(0, 0, term.col, term.row);
 
@@ -1529,12 +1530,12 @@ xfinishdraw(void)
 			break;
 		}
 
-		dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y);
-
 		if (im->should_delete) {
 			delete_image(im);
 			continue;
 		}
+
+		dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y);
 
 		if (!im->pixmap) {
 			im->pixmap = (void *)XCreatePixmap(xw.dpy, xw.win, im->width, im->height, DefaultDepth(xw.dpy, xw.scr));
@@ -1591,12 +1592,10 @@ xfinishdraw(void)
 				}
 			}
 		}
-		if (n == 0) {
-			/* delete_image(im); */
-			continue;
-		}
-		/* if (n > 1) */
-			XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted);
+
+		/* TODO: what was this for? un-commenting breaks sixel
+		 * display when there is exactly one sixel on the screen */
+		/* XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted); */
 
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
 		XFreeGC(xw.dpy, gc);

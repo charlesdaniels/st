@@ -986,7 +986,7 @@ scroll_images(int n) {
 	/* maximum sixel distance in lines from current view before
 	 * deallocation 
 	 * TODO: should be in config.h */
-	int max_sixel_distance = 50000;
+	int max_sixel_distance = 10000;
 
 	for (im = term.images; im; im = im->next) {
 		im->y += n;
