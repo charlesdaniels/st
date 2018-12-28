@@ -20,6 +20,7 @@
 #include "st.h"
 #include "win.h"
 #include "sixel.h"
+#include "util.h"
 
 #if   defined(__linux)
  #include <pty.h>
@@ -980,8 +981,24 @@ tcursor(int mode)
 void
 scroll_images(int n) {
 	ImageList *im;
+	int tmp;
+
+	/* maximum sixel distance in lines from current view before
+	 * deallocation 
+	 * TODO: should be in config.h */
+	int max_sixel_distance = 50000;
+
 	for (im = term.images; im; im = im->next) {
 		im->y += n;
+
+		/* check if the current sixel has exceeded the maximum
+		 * draw distance, and should therefore be deleted */
+		tmp = im->y;
+		if (tmp < 0) { tmp = tmp * -1; }
+		if (tmp > max_sixel_distance) {
+			dprintf("im@0x%08x exceeded maximum distance\n");
+			im->should_delete = 1;
+		}
 	}
 }
 

@@ -1556,6 +1556,11 @@ xfinishdraw(void)
 		for (y = im->y; y < im->y + (im->height+win.ch-1)/win.ch; y++) {
 			if (y >= 0 && y < term.row) {
 				for (x = im->x; x < im->x + (im->width+win.cw-1)/win.cw; x++) {
+					if ((x >= term.col) || (y >= term.row)) {
+						dprintf("char x=%i y=%i out of range\n", x, y);
+						continue;
+					}
+
 					if (!rects)
 						rects = xmalloc(sizeof(XRectangle) * nlimit);
 					if (term.line[y][x].mode & ATTR_SIXEL) {
