@@ -1515,6 +1515,12 @@ xfinishdraw(void)
 	XGCValues gcvalues;
 	GC gc;
 
+	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
+			win.h, 0, 0);
+	XSetForeground(xw.dpy, dc.gc,
+			dc.col[IS_SET(MODE_REVERSE)?
+				defaultfg : defaultbg].pixel);
+
 	drawregion(0, 0, term.col, term.row);
 	for (im = term.images; im; im = im->next) {
 		if (term.images == NULL) {
@@ -1596,11 +1602,6 @@ xfinishdraw(void)
 
 	}
 
-	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
-			win.h, 0, 0);
-	XSetForeground(xw.dpy, dc.gc,
-			dc.col[IS_SET(MODE_REVERSE)?
-				defaultfg : defaultbg].pixel);
 	free(rects);
 }
 
