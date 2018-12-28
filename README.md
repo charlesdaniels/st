@@ -12,6 +12,17 @@ constitutes my personal configuration of `st`.
 * The colorscheme has been set to [gruvbox](https://github.com/morhetz/gruvbox).
 * The font has been set to [gohufont](http://font.gohu.org/).
 * The cursor has been configured to be a red I-beam style.
+* Experimental support for sixel graphics has been added. There are several
+  known issues:
+	* Entering `clear` causes *all* sixels to be deleted from scrollback.
+	* Rendering sixel graphics may cause unusual cursor placement, this is
+	  not specific to this variant of st - the same issue is present in
+	  the xterm implementation. This is likely an issue of sixel height
+	  not being detected correctly.
+* Preliminary support for some additional control sequences has been added,
+  namely OSC 11 and 10 with more planned.
+* CSI S and T escape behavior has been modified to fix a bug where S or T
+  escapes would sometimes cause lines to be deleted from the scrollback buffer.
 
 ## Attribution
 
