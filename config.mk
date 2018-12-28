@@ -25,3 +25,7 @@ STLDFLAGS = $(LIBS) $(LDFLAGS)
 
 # compiler and linker
 # CC = c99
+
+# debug
+CC = gcc
+CFLAGS += -DEBUG -g

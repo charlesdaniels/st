@@ -1532,7 +1532,15 @@ xfinishdraw(void)
 
 		if (im->should_delete) {
 			delete_image(im);
-			continue;
+
+			/* prevent the next iteration from accessing an invalid
+			   image pointer */
+			im = term.images;
+			if (im == NULL) {
+				break;
+			} else {
+				continue;
+			}
 		}
 
 		dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y);
@@ -1595,6 +1603,7 @@ xfinishdraw(void)
 
 		/* TODO: what was this for? un-commenting breaks sixel
 		 * display when there is exactly one sixel on the screen */
+
 		/* XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted); */
 
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
