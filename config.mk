@@ -27,5 +27,5 @@ STLDFLAGS = $(LIBS) $(LDFLAGS)
 # CC = c99
 
 # debug
-CC = gcc
-CFLAGS += -DEBUG -g
+# CC = gcc
+# CFLAGS += -DEBUG -g
