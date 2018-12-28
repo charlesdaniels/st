@@ -1515,8 +1515,8 @@ xfinishdraw(void)
 	XGCValues gcvalues;
 	GC gc;
 
-	dprintf("term row=%i col=%i ocx=%i ocy=%i scr=%i\n", term.row, term.col, term.ocx, term.ocy, term.scr);
-	dprintf("cursor x y %i %i\n", term.c.x, term.c.y);
+	/* dprintf("term row=%i col=%i ocx=%i ocy=%i scr=%i\n", term.row, term.col, term.ocx, term.ocy, term.scr); */
+	/* dprintf("cursor x y %i %i\n", term.c.x, term.c.y); */
 
 	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
 			win.h, 0, 0);
@@ -1545,7 +1545,7 @@ xfinishdraw(void)
 			}
 		}
 
-		dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y);
+		/* dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y); */
 
 		if (!im->pixmap) {
 			im->pixmap = (void *)XCreatePixmap(xw.dpy, xw.win, im->width, im->height, DefaultDepth(xw.dpy, xw.scr));

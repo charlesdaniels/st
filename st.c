@@ -1822,11 +1822,11 @@ csihandle(void)
 		break;
 	case 'S': /* SU -- Scroll <n> line up */
 		DEFAULT(csiescseq.arg[0], 1);
-		tscrollup(term.top, csiescseq.arg[0], 0);
+		tscrollup(term.top, csiescseq.arg[0], 1);
 		break;
 	case 'T': /* SD -- Scroll <n> line down */
 		DEFAULT(csiescseq.arg[0], 1);
-		tscrolldown(term.top, csiescseq.arg[0], 0);
+		tscrolldown(term.top, csiescseq.arg[0], 1);
 		break;
 	case 'L': /* IL -- Insert <n> blank lines */
 		DEFAULT(csiescseq.arg[0], 1);
@@ -1884,6 +1884,11 @@ csihandle(void)
 		break;
 	case 'u': /* DECRC -- Restore cursor position (ANSI.SYS) */
 		tcursor(CURSOR_LOAD);
+		break;
+	case 't':
+		dprintf("CSI t\n");
+		/* TODO should probably not be hard-coded */
+		ttywrite(";420;720t", 10, 1);
 		break;
 	case ' ':
 		switch (csiescseq.mode[1]) {
@@ -1978,6 +1983,15 @@ strhandle(void)
 				 */
 				redraw();
 			}
+			return;
+		case 11:
+			dprintf("caught OSC 11\n");
+			ttywrite("11;rgb:ffff/ffff/ffff", 21, 1);
+			return;
+
+		case 10:
+			dprintf("caught OSC 10\n");
+			ttywrite("10;rgb:0000/0000/0000", 21, 1);
 			return;
 		}
 		break;
