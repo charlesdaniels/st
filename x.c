@@ -1571,41 +1571,6 @@ xfinishdraw(void)
 		n = 0;
 		memset(&gcvalues, 0, sizeof(gcvalues));
 		gc = XCreateGC(xw.dpy, xw.win, 0, &gcvalues);
-		for (y = im->y; y < im->y + (im->height+win.ch-1)/win.ch; y++) {
-			if (y >= 0 && y < term.row) {
-				for (x = im->x; x < im->x + (im->width+win.cw-1)/win.cw; x++) {
-					if ((x >= term.col) || (y >= term.row)) {
-						dprintf("char x=%i y=%i out of range\n", x, y);
-						continue;
-					}
-
-					if (!rects)
-						rects = xmalloc(sizeof(XRectangle) * nlimit);
-					if (term.line[y][x].mode & ATTR_SIXEL) {
-						if (n > 0 && rects[n-1].x+rects[n-1].width == borderpx+x*win.cw && rects[n-1].y == borderpx+y*win.ch) {
-							rects[n-1].width += win.cw;
-						} else {
-							rects[n].x = borderpx+x*win.cw;
-							rects[n].y = borderpx+y*win.ch;
-							rects[n].width = win.cw;
-							rects[n].height = win.ch;
-							if (++n == nlimit && (rects = realloc(rects, sizeof(XRectangle) * (nlimit *= 2))) == NULL)
-								die("Out of memory\n");
-						}
-					}
-				}
-			}
-			if (n > 1 && rects[n-2].x == rects[n-1].x && rects[n-2].width == rects[n-1].width) {
-				if (rects[n-2].y+rects[n-2].height == rects[n-1].y) {
-					rects[n-2].height += win.ch;
-					n--;
-				}
-			}
-		}
-
-		/* TODO: what was this for? un-commenting breaks sixel
-		 * display when there is exactly one sixel on the screen */
-		/* XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted); */
 
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
 		XFreeGC(xw.dpy, gc);
