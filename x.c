@@ -1522,7 +1522,6 @@ xfinishdraw(void)
 			dc.col[IS_SET(MODE_REVERSE)?
 				defaultfg : defaultbg].pixel);
 
-	drawregion(0, 0, term.col, term.row);
 
 	for (im = term.images; im; im = im->next) {
 		if (term.images == NULL) {
@@ -1603,7 +1602,6 @@ xfinishdraw(void)
 
 		/* TODO: what was this for? un-commenting breaks sixel
 		 * display when there is exactly one sixel on the screen */
-
 		/* XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted); */
 
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
@@ -1612,6 +1610,8 @@ xfinishdraw(void)
 	}
 
 	free(rects);
+
+	drawregion(0, 0, term.col, term.row);
 }
 
 void
