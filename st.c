@@ -1997,12 +1997,10 @@ strhandle(void)
 			new_image->pixels = malloc(new_image->width * new_image->height * 4);
 			if (sixel_parser_finalize(&sixel_st, new_image->pixels) != 0) {
 				perror("sixel_parser_finalize() failed");
-				//TODO
-				/* sixel_parser_deinit(&sixel_st); */
+				sixel_parser_deinit(&sixel_st);
 				return;
 			}
-			//TODO
-			/* sixel_parser_deinit(&sixel_st); */
+			sixel_parser_deinit(&sixel_st);
 			if (term.images) {
 				ImageList *im;
 				for (im = term.images; im->next;)
