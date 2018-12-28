@@ -7,7 +7,7 @@ constitutes my personal configuration of `st`.
 
 ## Changes From the Default:
 
-()[README.md.d/sixeldemo.png]
+!()[README.md.d/sixeldemo.png]
 
 *st displaying a gnuplot test to demonstrate sixel graphics support*
 
