@@ -7,6 +7,10 @@ constitutes my personal configuration of `st`.
 
 ## Changes From the Default:
 
+()[README.md.d/sixeldemo.png]
+
+*st displaying a gnuplot test to demonstrate sixel graphics support*
+
 * All [scrollback](https://st.suckless.org/patches/scrollback/) patches have
   been applied.
 * The colorscheme has been set to [gruvbox](https://github.com/morhetz/gruvbox).
