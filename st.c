@@ -978,6 +978,14 @@ tcursor(int mode)
 }
 
 void
+scroll_images(int n) {
+	ImageList *im;
+	for (im = term.images; im; im = im->next) {
+		im->y += n;
+	}
+}
+
+void
 treset(void)
 {
 	uint i;
@@ -1006,7 +1014,7 @@ treset(void)
 	}
 
 	for (im = term.images; im; im = im->next) {
-		/* im->should_delete = 1; */
+		im->should_delete = 1;
 	}
 }
 
@@ -1036,7 +1044,6 @@ void
 kscrolldown(const Arg* a)
 {
 	int n = a->i;
-	ImageList *im;
 
 	if (n < 0)
 		n = term.row + n;
@@ -1049,19 +1056,14 @@ kscrolldown(const Arg* a)
 		selscroll(0, -n);
 		tfulldirt();
 	}
-	for (im = term.images; im; im = im->next) {
-		if (im->y < term.bot)
-			im->y-=n;
-		/* if (im->y > term.bot) */
-		/*         im->should_delete = 1; */
-	}
+
+	scroll_images(-1*n);
 }
 
 void
 kscrollup(const Arg* a)
 {
 	int n = a->i;
-	ImageList *im;
 
 	if (n < 0)
 		n = term.row + n;
@@ -1071,13 +1073,8 @@ kscrollup(const Arg* a)
 		selscroll(0, n);
 		tfulldirt();
 	}
-	for (im = term.images; im; im = im->next) {
-		if (im->y+im->height/win.ch > term.top)
-			im->y += n;
-		//TODO
-		/* if (im->y+im->height/win.ch < term.top) */
-		/*         im->should_delete = 1; */
-	}
+
+	scroll_images(n);
 }
 
 
@@ -1086,7 +1083,6 @@ tscrolldown(int orig, int n, int copyhist)
 {
 	int i;
 	Line temp;
-	ImageList *im;
 
 	LIMIT(n, 0, term.bot-orig+1);
 
@@ -1106,12 +1102,7 @@ tscrolldown(int orig, int n, int copyhist)
 		term.line[i-n] = temp;
 	}
 
-	for (im = term.images; im; im = im->next) {
-		if (im->y < term.bot)
-			im->y+=n;
-		/* if (im->y > term.bot) */
-		/*         im->should_delete = 1; */
-	}
+	scroll_images(n);
 
 	selscroll(orig, n);
 }
@@ -1121,7 +1112,6 @@ tscrollup(int orig, int n, int copyhist)
 {
 	int i;
 	Line temp;
-	ImageList *im;
 
 	LIMIT(n, 0, term.bot-orig+1);
 
@@ -1141,13 +1131,7 @@ tscrollup(int orig, int n, int copyhist)
 		term.line[i+n] = temp;
 	}
 
-	for (im = term.images; im; im = im->next) {
-		if (im->y+im->height/win.ch > term.top)
-			im->y -= n;
-		//TODO
-		/* if (im->y+im->height/win.ch < term.top) */
-		/*         im->should_delete = 1; */
-	}
+	scroll_images(-1 * n);
 
 	selscroll(orig, -n);
 }
@@ -1291,8 +1275,10 @@ tsetchar(Rune u, Glyph *attr, int x, int y)
 void
 tclearregion(int x1, int y1, int x2, int y2)
 {
+
 	int x, y, temp;
 	Glyph *gp;
+	ImageList *im;
 
 	if (x1 > x2)
 		temp = x1, x1 = x2, x2 = temp;
@@ -1316,6 +1302,7 @@ tclearregion(int x1, int y1, int x2, int y2)
 			gp->u = ' ';
 		}
 	}
+
 }
 
 void
@@ -1684,6 +1671,7 @@ csihandle(void)
 {
 	char buf[40];
 	int len;
+	ImageList *im;
 
 	switch (csiescseq.mode[0]) {
 	default:
@@ -1773,6 +1761,14 @@ csihandle(void)
 		tputtab(csiescseq.arg[0]);
 		break;
 	case 'J': /* ED -- Clear screen */
+
+		/* purge sixels */
+		/* TODO: kinda gross, should probably make this only purge
+		 * visible sixels */
+		for (im = term.images; im; im = im->next) {
+			im->should_delete = 1;
+		}
+
 		switch (csiescseq.arg[0]) {
 		case 0: /* below */
 			tclearregion(term.c.x, term.c.y, term.col-1, term.c.y);

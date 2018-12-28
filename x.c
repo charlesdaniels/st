@@ -20,7 +20,7 @@ static char *argv0;
 /* #include "compat.h" */
 #include "st.h"
 #include "win.h"
-
+#include "util.h"
 
 /* X modifiers */
 #define XK_ANY_MOD    UINT_MAX
@@ -1440,21 +1440,31 @@ xsettitle(char *p)
 void
 delete_image(ImageList *im)
 {
-	// TODO
-	im->should_delete=0;
-	return;
-	printf("should never see this\n");
-
-	if (im->prev)
+	dprintf("deleting im@%x\n", im);
+	if (im->prev) {
+		dprintf("im->prev->next = im@%x\n", im->next);
 		im->prev->next = im->next;
-	else
+	} else {
+		dprintf("term.images = im@%x\n", im->next);
 		term.images = im->next;
-	if (im->next)
+	}
+
+	if (im->next) {
+		dprintf("im->next->prev = im@%x\n", im->prev);
 		im->next->prev = im->prev;
-	if (im->pixmap)
+	}
+
+	if (im->pixmap) {
+		dprintf("freeing pixmap\n");
 		XFreePixmap(xw.dpy, (Drawable)im->pixmap);
+	}
+
+	dprintf("freeing pixels\n");
 	free(im->pixels);
+	dprintf("freeing im\n");
 	free(im);
+
+	dprintf("delete done\n");
 }
 
 int
@@ -1507,14 +1517,19 @@ xfinishdraw(void)
 
 	drawregion(0, 0, term.col, term.row);
 	for (im = term.images; im; im = im->next) {
-		if (term.images == NULL) { break; }
+		if (term.images == NULL) {
+			/* last image was deleted, bail out */
+			break;
+		}
+
+		dprintf("im@0x%08x: x=%i y=%i\n", im, im->x, im->y);
+
 		if (im->should_delete) {
 			delete_image(im);
 			continue;
 		}
 
 		if (!im->pixmap) {
-			printf("create image pixmap!\n");
 			im->pixmap = (void *)XCreatePixmap(xw.dpy, xw.win, im->width, im->height, DefaultDepth(xw.dpy, xw.scr));
 			XImage ximage = {
 				.format = ZPixmap,
@@ -1565,13 +1580,15 @@ xfinishdraw(void)
 			}
 		}
 		if (n == 0) {
-			delete_image(im);
+			/* delete_image(im); */
 			continue;
 		}
 		if (n > 1)
 			XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted);
+
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
 		XFreeGC(xw.dpy, gc);
+
 	}
 
 	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
