@@ -1517,11 +1517,12 @@ xfinishdraw(void)
 
 	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
 			win.h, 0, 0);
-	XSetForeground(xw.dpy, dc.gc,
-			dc.col[IS_SET(MODE_REVERSE)?
-				defaultfg : defaultbg].pixel);
+	/* XSetForeground(xw.dpy, dc.gc, */
+	/*                 dc.col[IS_SET(MODE_REVERSE)? */
+	/*                         defaultfg : defaultbg].pixel); */
 
 	drawregion(0, 0, term.col, term.row);
+
 	for (im = term.images; im; im = im->next) {
 		if (term.images == NULL) {
 			/* last image was deleted, bail out */
@@ -1594,7 +1595,7 @@ xfinishdraw(void)
 			/* delete_image(im); */
 			continue;
 		}
-		if (n > 1)
+		/* if (n > 1) */
 			XSetClipRectangles(xw.dpy, gc, 0, 0, rects, n, YXSorted);
 
 		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
