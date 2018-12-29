@@ -19,7 +19,7 @@ LIBS = -L$(X11LIB) -lm -lX11 -lutil -lXft \
        `pkg-config --libs freetype2`
 
 # flags
-CPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600
+CPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 `if [ -f /etc/fonts/conf.d/70-no-bitmaps.conf ] ; then echo '-DDISABLE_GOHUFONT' ; fi`
 STCFLAGS = $(INCS) $(CPPFLAGS) $(CFLAGS)
 STLDFLAGS = $(LIBS) $(LDFLAGS)
 
