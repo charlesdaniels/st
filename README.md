@@ -1,5 +1,8 @@
 # st
 
+**ATTENTION**: this repo is no longer maintained, I don't use `st` anymore, and
+have switched to `uxterm`.
+
 This is a fork of the excellent [st](https://st.suckless.org/) terminal by
 Suckless (most recently based on st-0.8.1). `st` is configured by forking and
 applying appropriate patching and source modifications. This repository
